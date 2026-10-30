@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 9c1451cf4cf6cb74a8e9deedc9e97fa5
+guid: a9b84c161fa0c2e49b04154c4db05193
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -108,12 +108,56 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: Lion-idle_0
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 1151
+        width: 423
+        height: 842
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 62b7902da45ba024eab6e8e80d571147
+      internalID: -361466526
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lion-idle_1
+      rect:
+        serializedVersion: 2
+        x: 786
+        y: 1147
+        width: 423
+        height: 846
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9536c638a633a3e40ab83d946b6b6838
+      internalID: -1221795183
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 849a982906197d847a9403d901b538cd
     internalID: 0
     vertices: []
     indices: 
@@ -121,8 +165,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
-    nameFileIdTable: {}
+      entries:
+      - key: SpriteEditor.SliceOnImport
+        value: True
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":true,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Lion-idle_0: -361466526
+      Lion-idle_1: -1221795183
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
