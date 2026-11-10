@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
@@ -8,11 +9,12 @@ using UnityEngine.InputSystem;
 public class LionController : MonoBehaviour
 {
     [Header("Movimento")]
-    public float moveSpeed = 5f;
-    public float jumpForce = 12f;
+    public float moveSpeed = 3f;     // velocidade andando
+    public float runSpeed = 6f;      // velocidade correndo (segurando Shift)
+    public float jumpForce = 8f;
 
     [Header("Chão")]
-    public LayerMask groundLayer;          // marque a layer "Ground" no chão
+    public LayerMask groundLayer;
     public float groundCheckDistance = 0.1f;
 
     Rigidbody2D rb;
@@ -20,7 +22,12 @@ public class LionController : MonoBehaviour
     Animator anim;
     SpriteRenderer sr;
 
+    // Guarda os parâmetros que existem no Animator, para não dar erro
+    // se algum ainda não tiver sido criado.
+    readonly HashSet<int> animParams = new HashSet<int>();
+
     float moveInput;
+    bool runHeld;
     bool jumpPressed;
     bool isGrounded;
 
@@ -31,21 +38,29 @@ public class LionController : MonoBehaviour
         anim = GetComponent<Animator>();
         sr = GetComponent<SpriteRenderer>();
         rb.freezeRotation = true;
+
+        if (anim != null)
+            foreach (var p in anim.parameters)
+                animParams.Add(p.nameHash);
     }
 
     void Update()
     {
         ReadInput();
 
-        // Vira o sprite conforme a direção (se o sprite original olha para a direita)
+        bool moving = Mathf.Abs(moveInput) > 0.01f;
+        bool isRunning = moving && runHeld;
+
+        // Vira o sprite conforme a direção
         if (moveInput > 0.01f) sr.flipX = false;
         else if (moveInput < -0.01f) sr.flipX = true;
 
         if (anim != null)
         {
-            anim.SetFloat("Speed", Mathf.Abs(moveInput));
-            anim.SetBool("IsGrounded", isGrounded);
-            anim.SetFloat("YVelocity", rb.linearVelocity.y);
+            SetFloat("Speed", Mathf.Abs(moveInput));
+            SetBool("IsRunning", isRunning);
+            SetBool("IsGrounded", isGrounded);
+            SetFloat("YVelocity", rb.linearVelocity.y);
         }
     }
 
@@ -53,12 +68,13 @@ public class LionController : MonoBehaviour
     {
         CheckGround();
 
-        rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
+        float speed = runHeld ? runSpeed : moveSpeed;
+        rb.linearVelocity = new Vector2(moveInput * speed, rb.linearVelocity.y);
 
         if (jumpPressed && isGrounded)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
-            if (anim != null) anim.SetTrigger("Jump");
+            SetTrigger("Jump");
         }
         jumpPressed = false;
     }
@@ -72,10 +88,14 @@ public class LionController : MonoBehaviour
         moveInput = 0f;
         if (kb.aKey.isPressed || kb.leftArrowKey.isPressed) moveInput -= 1f;
         if (kb.dKey.isPressed || kb.rightArrowKey.isPressed) moveInput += 1f;
+
+        runHeld = kb.leftShiftKey.isPressed || kb.rightShiftKey.isPressed;
+
         if (kb.spaceKey.wasPressedThisFrame || kb.wKey.wasPressedThisFrame || kb.upArrowKey.wasPressedThisFrame)
             jumpPressed = true;
 #else
         moveInput = Input.GetAxisRaw("Horizontal");
+        runHeld = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
         if (Input.GetButtonDown("Jump")) jumpPressed = true;
 #endif
     }
@@ -86,5 +106,19 @@ public class LionController : MonoBehaviour
             col.bounds.center, col.bounds.size, col.direction, 0f,
             Vector2.down, groundCheckDistance, groundLayer);
         isGrounded = hit.collider != null;
+    }
+
+    // --- Atalhos seguros para o Animator ---
+    void SetFloat(string name, float v)
+    {
+        if (animParams.Contains(Animator.StringToHash(name))) anim.SetFloat(name, v);
+    }
+    void SetBool(string name, bool v)
+    {
+        if (animParams.Contains(Animator.StringToHash(name))) anim.SetBool(name, v);
+    }
+    void SetTrigger(string name)
+    {
+        if (animParams.Contains(Animator.StringToHash(name))) anim.SetTrigger(name);
     }
 }
